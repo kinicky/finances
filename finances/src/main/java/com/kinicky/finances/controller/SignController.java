@@ -1,27 +1,31 @@
-package com.kinicky.finances;
+package com.kinicky.finances.controller;
 
-import java.io.IOException;
+import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.kinicky.finances.Greeting;
 
-/**
- * Form Handling Servlet Most of the action for this sample is in webapp/guestbook.jsp, which displays the {@link Greeting}'s. This servlet
- * has one method {@link #doPost(<#HttpServletRequest req#>, <#HttpServletResponse resp#>)} which takes the form data and saves it.
- */
-public class SignGuestbookServlet extends HttpServlet {
+@Controller
+public class SignController {
 
-    // Process the http POST of the form
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private final static Logger logger = Logger.getLogger(GuestbookController.class.getName()); 
+    
+    @RequestMapping("/sign")
+    public ModelAndView sign(HttpServletRequest req, HttpServletResponse resp) {
         Greeting greeting;
 
+        logger.info("sign - BEGIN");
+        
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser(); // Find out who the user is.
 
@@ -37,6 +41,9 @@ public class SignGuestbookServlet extends HttpServlet {
         // will immediately get a new page using redirect and we want the data to be present.
         ObjectifyService.ofy().save().entity(greeting).now();
 
-        resp.sendRedirect("/guestbook.jsp?guestbookName=" + guestbookName);
+        
+        logger.info("sign - END");
+        
+        return new ModelAndView("guestbook");
     }
 }

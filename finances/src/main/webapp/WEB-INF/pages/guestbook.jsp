@@ -28,14 +28,14 @@
             pageContext.setAttribute("user", user);
     %>
 
-    <p>
-        Hello, ${fn:escapeXml(user.nickname)}! (You can <a href="<%=userService.createLogoutURL(request.getRequestURI())%>">sign out</a>.)
+    <p><%=request.getRequestURI() %>
+        Hello, ${fn:escapeXml(user.nickname)}! (You can <a href="<%=userService.createLogoutURL("/guestbook")%>">sign out</a>.)
     </p>
     <%
         } else {
     %>
     <p>
-        Hello! <a href="<%=userService.createLoginURL(request.getRequestURI())%>">Sign in</a> to include your name with greetings you post.
+        Hello! <a href="<%=userService.createLoginURL("/guestbook")%>">Sign in</a> to include your name with greetings you post.
     </p>
     <%
         }
@@ -85,6 +85,13 @@
         }
     %>
 
+    <form action="/upload" method="post">
+        <div>
+            <input type="submit" value="Upload" />
+        </div>
+    </form>
+
+
     <form action="/sign" method="post">
         <div>
             <textarea name="content" rows="3" cols="60"></textarea>
@@ -95,7 +102,7 @@
         <input type="hidden" name="guestbookName" value="${fn:escapeXml(guestbookName)}" />
     </form>
 
-    <form action="/guestbook.jsp" method="get">
+    <form action="/guestbook" method="get">
         <div>
             <input type="text" name="guestbookName" value="${fn:escapeXml(guestbookName)}" />
         </div>
