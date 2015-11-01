@@ -4,10 +4,12 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
 <%@ page import="com.kinicky.finances.Greeting"%>
 <%@ page import="com.kinicky.finances.Guestbook"%>
+<%@ page import="com.kinicky.finances.Transaction"%>
 <%@ page import="com.googlecode.objectify.Key"%>
 <%@ page import="com.googlecode.objectify.ObjectifyService"%>
 <%@ page import="java.util.List"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <html>
 <head>
@@ -28,7 +30,7 @@
             pageContext.setAttribute("user", user);
     %>
 
-    <p><%=request.getRequestURI() %>
+    <p>
         Hello, ${fn:escapeXml(user.nickname)}! (You can <a href="<%=userService.createLogoutURL("/guestbook")%>">sign out</a>.)
     </p>
     <%
@@ -83,8 +85,48 @@
     <%
         }
         }
-    %>
 
+        List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class)
+                .limit(100) 
+                .list();
+
+        if (txns.isEmpty()) {
+    %>
+    <p>No Transactions</p>
+    <%
+        } else {
+            
+            %>
+             <table>
+             <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Withdrawal</th>
+                <th>Deposit</th>
+                <th>Balance</th>
+             </tr>
+            <%
+            
+            for (Transaction txn : txns) {
+                pageContext.setAttribute("date", txn.getDate());
+                pageContext.setAttribute("description", txn.getDescription());
+                pageContext.setAttribute("withdrawal", txn.getWithdrawal());
+                pageContext.setAttribute("deposit", txn.getDeposit());
+                pageContext.setAttribute("balance", txn.getBalance());
+                %>
+                <tr>
+                <td><fmt:formatDate type="both" value="${date}" /></td>
+                <td>${fn:escapeXml(description)}</td>
+                <td>${fn:escapeXml(withdrawal)}</td>
+                <td>${fn:escapeXml(deposit)}</td>
+                <td>${fn:escapeXml(balance)}</td>
+                </tr>
+                <%
+            }
+        }
+
+    %>
+            </table>
     <form action="/upload" method="post">
         <div>
             <input type="submit" value="Upload" />

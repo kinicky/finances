@@ -21,6 +21,7 @@
         <url-pattern>/guestbook</url-pattern>
         <url-pattern>/sign</url-pattern>
         <url-pattern>/upload</url-pattern>
+        <url-pattern>/uploadFile</url-pattern>
     </servlet-mapping>
     
 

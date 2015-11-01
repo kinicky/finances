@@ -4,6 +4,7 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
 <%@ page import="com.googlecode.objectify.Key"%>
 <%@ page import="com.googlecode.objectify.ObjectifyService"%>
+<%@ page import="com.kinicky.finances.Transaction"%>
 <%@ page import="java.util.List"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
@@ -15,12 +16,40 @@
 <body>
 
     
+    <%
 
-    <form action="/uploadFile" method="post">
+        List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class)
+                .limit(100) 
+                .list();
+
+        if (txns.isEmpty()) {
+    %>
+    <p>No Transactions</p>
+    <%
+        } else {
+
+            %>
+            <b>Date - Description - Withdrawal - Deposit - Balance</b>
+            <%
+            
+            for (Transaction txn : txns) {
+                pageContext.setAttribute("date", txn.getDate());
+                pageContext.setAttribute("description", txn.getDescription());
+                pageContext.setAttribute("withdrawal", txn.getWithdrawal());
+                pageContext.setAttribute("deposit", txn.getDeposit());
+                pageContext.setAttribute("balance", txn.getBalance());
+                %>
+                <b>${fn:escapeXml(date)} - ${fn:escapeXml(description)} - ${fn:escapeXml(withdrawal)} - ${fn:escapeXml(deposit)} - ${fn:escapeXml(balance)}</b>
+                <%
+            }
+        }
+
+    %>
+    
+
+    <form action="/uploadFile" method="post" enctype="multipart/form-data">
         <div>
-            <textarea name="content" rows="3" cols="60"></textarea>
-        </div>
-        <div>
+            <input type="file" name="file">
             <input type="submit" value="Upload" />
         </div>
     </form>
