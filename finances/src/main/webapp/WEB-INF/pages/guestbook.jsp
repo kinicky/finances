@@ -10,13 +10,81 @@
 <%@ page import="java.util.List"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+
+    <script type="text/javascript">
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+          
+          var jsonData = $.ajax({
+              type : 'post',
+              contentType: "application/json",
+              url: "/guestbook/lineChart",
+              dataType: "json",
+              async: false
+            }).responseText;
+
+          
+          alert("HI: " + jsonData);
+
+            var data = new google.visualization.DataTable(jsonData);
+          
+          /*
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Date');
+          data.addColumn('number', 'Withdrawal');
+          data.addColumn('number', 'Deposit');
+          data.addColumn('number', 'Balance');
+          data.addRows([
+                        ['2004-01-01', 10, 0, 500],
+                        ['2004-01-01', 4, 0, 500],
+                        ['2004-01-02', 0, 1120, 500],
+                        ['2004-01-02', 40, 0, 490],
+                        ['2004-01-02', 10, 0, 480],
+                        ['2004-01-02', 50, 0, 450],
+                        ['2004-01-03', 70, 0, 440],
+                        ['2004-01-03', 70, 0, 440],
+                        ['2004-01-04', 10, 0, 300],
+                        ['2004-01-04', 90, 0, 300],
+                        ['2004-01-05', 0, 1120, 800],
+                        ['2004-01-06', 20, 0, 800],
+                        ['2004-01-07', 30, 0, 800],
+                        ['2004-01-07', 10, 0, 800]        
+		  ]);
+*/
+
+        var options = {
+          title: 'Company Performance',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
 </head>
 
 <body>
+
+<div id="curve_chart" style="width: 900px; height: 500px"></div>
 
     <%
         String guestbookName = request.getParameter("guestbookName");
@@ -87,7 +155,6 @@
         }
 
         List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class)
-                .limit(100) 
                 .list();
 
         if (txns.isEmpty()) {

@@ -1,9 +1,10 @@
 package com.kinicky.finances;
 
-import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 @Entity
 public class Transaction {
@@ -13,11 +14,15 @@ public class Transaction {
     private String bank;
     private String account;
     private String code;
-    private Date date;
+    @Index
+    private String date;
     private Integer lineNumber;
+    @Index
     private String description;
     private String blank1;
+    @Index
     private String withdrawal;
+    @Index
     private String deposit;
     private String blank2;
     private String blank3;
@@ -58,11 +63,11 @@ public class Transaction {
         this.code = code;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -146,4 +151,9 @@ public class Transaction {
         this.balance = balance;
     }
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+    
 }

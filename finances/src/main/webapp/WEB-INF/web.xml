@@ -4,8 +4,8 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     
     
-     <welcome-file-list>
-    <welcome-file>guestbook</welcome-file>
+  <welcome-file-list>
+    <welcome-file>summary</welcome-file>
   </welcome-file-list>
 
   
@@ -18,26 +18,17 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>finances</servlet-name>
+        <url-pattern>/summary/*</url-pattern>
+        <url-pattern>/import/*</url-pattern>
+        <url-pattern>/categories/*</url-pattern>
         <url-pattern>/guestbook</url-pattern>
+        <url-pattern>/guestbook/*</url-pattern>
         <url-pattern>/sign</url-pattern>
         <url-pattern>/upload</url-pattern>
         <url-pattern>/uploadFile</url-pattern>
     </servlet-mapping>
     
 
-    
-    
-    <!-- <servlet>
-        <servlet-name>sign</servlet-name>
-        <servlet-class>com.example.guestbook.SignGuestbookServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>sign</servlet-name>
-        <url-pattern>/sign</url-pattern>
-    </servlet-mapping>
-    <welcome-file-list>
-        <welcome-file>guestbook.jsp</welcome-file>
-    </welcome-file-list>-->
     <filter>
         <filter-name>ObjectifyFilter</filter-name>
         <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>

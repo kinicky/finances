@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,7 +38,7 @@ public class UploadController {
         return new ModelAndView("upload");
     }
     
-    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadFile2", method = RequestMethod.POST)
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile file) {
 
         logger.info("uploadFile - BEGIN");
@@ -58,7 +57,7 @@ public class UploadController {
                 txn.setBank(lineArray[0]);
                 txn.setAccount(lineArray[1]);
                 txn.setCode(lineArray[2]);
-                txn.setDate(df.parse(lineArray[3]));
+                //txn.setDate(df.parse(lineArray[3]));
                 txn.setLineNumber(Integer.parseInt(lineArray[4]));
                 txn.setDescription(lineArray[5]);
                 txn.setBlank1(lineArray[6]);
@@ -86,8 +85,6 @@ public class UploadController {
             logger.info("listing DONE");
             
         } catch (IOException e) {
-            logger.info("uploadFile - ERROR " + e);
-        } catch (ParseException e) {
             logger.info("uploadFile - ERROR " + e);
         }
 
