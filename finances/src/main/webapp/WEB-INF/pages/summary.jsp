@@ -1,5 +1,9 @@
 <%@include file="header.jsp" %>
 
+<script type="text/javascript">
+    google.setOnLoadCallback(drawSummaryCharts);
+</script>
+
     <table style="width: 1010px;">
         <tr>
             <td colspan="2">Year:</td>

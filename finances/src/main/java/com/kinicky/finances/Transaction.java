@@ -29,6 +29,8 @@ public class Transaction {
     private String blank4;
     private String blank5;
     private String balance;
+    @Index
+    private String category;
 
         
     public Long getId() {
@@ -149,6 +151,14 @@ public class Transaction {
 
     public void setBalance(String balance) {
         this.balance = balance;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

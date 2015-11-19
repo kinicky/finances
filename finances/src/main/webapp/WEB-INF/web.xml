@@ -20,9 +20,8 @@
         <servlet-name>finances</servlet-name>
         <url-pattern>/summary/*</url-pattern>
         <url-pattern>/import/*</url-pattern>
-        <url-pattern>/categories/*</url-pattern>
-        <url-pattern>/guestbook</url-pattern>
-        <url-pattern>/guestbook/*</url-pattern>
+        <url-pattern>/categoriesShow</url-pattern>
+        <url-pattern>/categoriesSave</url-pattern>
         <url-pattern>/sign</url-pattern>
         <url-pattern>/upload</url-pattern>
         <url-pattern>/uploadFile</url-pattern>

@@ -1,0 +1,310 @@
+body {
+    font-family: Verdana;
+    font-size: 62.5%;
+    background: #FFF url(../images/bg_body.jpg) repeat-x;
+    margin: 0;
+    /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+    padding: 0;
+    color: #000000;
+}
+
+p {
+    font-size: 1.05em;
+}
+
+td, select, input {
+    font-family: Verdana;
+    font-size: 1.05em;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+    position: relative;
+}
+
+li li {
+    width: 150px;
+    border: 1px solid #000000;
+    border-width: 0px 1px 1px 0px;
+    padding: 7px;
+}
+
+li li:hover {
+    background: #808080;
+}
+ul ul {
+    top: 0;
+    left: 100%;
+    position: absolute;
+    display: none;
+    background: #EFF0F0;
+}
+
+ul ul ul {
+    top: 0;
+    left: 100%;
+}
+
+li:hover>ul {
+    display: block;
+}
+
+select {
+    padding: 2px;
+    border: solid 1px #CCC;
+    border-radius: 5px;
+    -moz-border-radius: 5px; /* FF */
+    -webkit-border-radius: 5px; /* Chrome */
+}
+
+.rootContainer {
+    width: 1020px;
+    height: 35px;
+    margin: 0 auto;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.contentBox {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    background: #ffffff;
+}
+
+.topMenuBox {
+    width: 1010px;
+    height: 35px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #ffffff;
+}
+
+.mainMenu {
+    width: 1020px;
+    height: 25px;
+    margin: 0 auto;
+    font-size: 1.2em;
+    padding-top: 10px;
+    background-color: #333333;
+}
+
+.subMenu {
+    width: 1020px;
+    height: 15px;
+    margin: 0 auto;
+    font-size: 1.05em;
+    background-color: #EFF0F0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: solid 1px #666666;
+}
+
+.innerMainMenu {
+    width: 1010px;
+    height: 30px;
+    margin: 0 auto;
+    color: #cccccc;
+}
+
+.menuItem {
+    display: inline;
+    font-weight: bold;
+    color: #ffffff;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.menuItem a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.menuItem:hover {
+    color: #000000;
+    background-color: #ffffff;
+    border-radius: 5px;
+    -moz-border-radius: 5px; /* FF */
+    -webkit-border-radius: 5px; /* Chrome */
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.selectedMenuItem {
+    background-color: #66CC99;
+    border-radius: 5px;
+    -moz-border-radius: 5px; /* FF */
+    -webkit-border-radius: 5px; /* Chrome */
+}
+
+.selectedMenuItem:hover {
+    color: #666666;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.subMenuItem {
+    height: 30px;
+    display: inline;
+    color: #000000;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.subMenuItem:hover {
+    color: #000000;
+    background-color: #ffffff;
+    border-radius: 5px;
+    -moz-border-radius: 5px; /* FF */
+    -webkit-border-radius: 5px; /* Chrome */
+    cursor: pointer;
+}
+
+.selectedSubMenuItem {
+    color: #ffffff;
+    background-color: #66CC99;
+    border-radius: 5px;
+    -moz-border-radius: 5px; /* FF */
+    -webkit-border-radius: 5px; /* Chrome */
+}
+
+.selectedSubMenuItem:hover {
+    color: #666666;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.prettyTable {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    border: 1px solid #000000;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    -moz-border-radius-topright: 0px;
+    -webkit-border-top-right-radius: 0px;
+    border-top-right-radius: 0px;
+    -moz-border-radius-topleft: 0px;
+    -webkit-border-top-left-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.prettyTable table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.prettyTable tr:last-child td:last-child {
+    -moz-border-radius-bottomright: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.prettyTable table tr:first-child td:first-child {
+    -moz-border-radius-topleft: 0px;
+    -webkit-border-top-left-radius: 0px;
+    border-top-left-radius: 0px;
+}
+
+.prettyTable table tr:first-child td:last-child {
+    -moz-border-radius-topright: 0px;
+    -webkit-border-top-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.prettyTable tr:last-child td:first-child {
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.prettyTable tr:hover td {
+    
+}
+
+.prettyTable tr:nth-child(odd) {
+    background-color: #e5e5e5;
+}
+
+.prettyTable tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.prettyTable td {
+    vertical-align: middle;
+    border: 1px solid #000000;
+    border-width: 0px 1px 1px 0px;
+    text-align: left;
+    padding: 7px;
+    font-size: 10px;
+    font-family: Arial;
+    font-weight: normal;
+    color: #000000;
+}
+
+.prettyTable tr:last-child td {
+    border-width: 0px 1px 0px 0px;
+}
+
+.prettyTable tr td:last-child {
+    border-width: 0px 0px 1px 0px;
+}
+
+.prettyTable tr:last-child td:last-child {
+    border-width: 0px 0px 0px 0px;
+}
+
+.prettyTable tr:first-child td {
+    background: -o-linear-gradient(bottom, #4c4c4c 5%, #000000 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4c4c4c),
+        color-stop(1, #000000));
+    background: -moz-linear-gradient(center top, #4c4c4c 5%, #000000 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#4c4c4c", endColorstr="#000000");
+    background: -o-linear-gradient(top, #4c4c4c, 000000);
+    background-color: #4c4c4c;
+    border: 0px solid #000000;
+    text-align: center;
+    border-width: 0px 0px 1px 1px;
+    font-size: 14px;
+    font-family: Arial;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.prettyTable tr:first-child:hover td {
+    background: -o-linear-gradient(bottom, #4c4c4c 5%, #000000 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4c4c4c),
+        color-stop(1, #000000));
+    background: -moz-linear-gradient(center top, #4c4c4c 5%, #000000 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#4c4c4c", endColorstr="#000000");
+    background: -o-linear-gradient(top, #4c4c4c, 000000);
+    background-color: #4c4c4c;
+}
+
+.prettyTable tr:first-child td:first-child {
+    border-width: 0px 0px 1px 0px;
+}
+
+.prettyTable tr:first-child td:last-child {
+    border-width: 0px 0px 1px 1px;
+}
