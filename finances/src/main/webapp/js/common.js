@@ -71,20 +71,51 @@ function drawExpenseCharts() {
 }
 
 function selectCategory(idx, txnId, category) {
-    
+
     $('#txn_' + idx).html(category);
- 
-    var json = {"txnId" : txnId, "category" : category};
-    
-     $.ajax({
+
+    var json = {
+        "txnId" : txnId,
+        "category" : category
+    };
+
+    $.ajax({
         type : 'post',
-        data: JSON.stringify(json),
+        data : JSON.stringify(json),
         contentType : "application/json",
         url : "/categoriesSave",
         async : false
     });
 }
 
-function handleTabSelect() {
+function populateMonthDropdown() {
+
+    var json = {
+            "selectedYear" : $("#yearDropdown").val()
+        };
     
+    $.ajax({
+        type : 'post',
+        data : JSON.stringify(json),
+        contentType : "application/json",
+        url : "/summary/populateMonthDropdown",
+        dataType : "json",
+        async : false,
+        success : function(json) {
+
+            var $monthDropdown = $("#monthDropdown");
+
+            $monthDropdown.empty(); // remove old options
+            $.each(json, function(value, key) {
+
+                $monthDropdown.append($("<option></option>").attr("value", key).text(key));
+            });
+        }
+    });
+
+    $('#monthSelect').val();
+}
+
+function handleTabSelect() {
+
 }

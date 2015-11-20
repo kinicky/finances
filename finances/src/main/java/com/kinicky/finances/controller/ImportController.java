@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.googlecode.objectify.ObjectifyService;
+import com.kinicky.finances.AvailableYearMonth;
 import com.kinicky.finances.Transaction;
 import com.kinicky.finances.exception.DuplicatedTransactionException;
 
@@ -67,7 +67,9 @@ public class ImportController {
                 txn.setBlank4(lineArray[11]);
                 txn.setBlank5(lineArray[12]);
                 txn.setBalance(lineArray[13]);
-
+ 
+                saveAvailableYearMonth(txn.getDate());
+                
                 List<Transaction> dbTxns = ObjectifyService.ofy().load().type(Transaction.class)
                     .filter("date", txn.getDate())
                     .filter("description", txn.getDescription())
@@ -104,6 +106,21 @@ public class ImportController {
         logger.info(LID + "uploadFile - END");
 
         return new ModelAndView("import");
+    }
+    
+    private void saveAvailableYearMonth(String date) {
+
+        String[] dateArray = new String[3];
+        dateArray = date.split("/");
+
+        AvailableYearMonth ym = new AvailableYearMonth(dateArray[0], dateArray[1]);
+
+        List<AvailableYearMonth> yms = ObjectifyService.ofy().load().type(AvailableYearMonth.class).filter("yearMonth", ym.getYearMonth()).list();
+        if (yms.isEmpty()) {
+            ObjectifyService.ofy().save().entity(ym).now();
+            logger.info(LID + " Year-Month saved: " + ym);
+        }
+
     }
 
 }

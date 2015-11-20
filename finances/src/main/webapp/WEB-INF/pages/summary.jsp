@@ -6,8 +6,8 @@
 
     <table style="width: 1010px;">
         <tr>
-            <td colspan="2">Year:</td>
-            <td colspan="3">Month:</td>
+            <td colspan="2">Year: <form:select id="yearDropdown" path="selectedYear" items="${yearList}" onchange="populateMonthDropdown()" /></td>
+            <td colspan="3">Month: <form:select id="monthDropdown" path="selectedMonth" items="${monthList}" /></td>
         </tr>
         <tr>
             <td colspan="5">Summary of 2015
