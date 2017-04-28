@@ -1,7 +1,7 @@
-appengine-skeleton
+PA-Finances
 =============================
 
-This is a generated application from the appengine-skeleton archetype.
+Simple Google App Engine application that reads statements from a CSV file and show some graphs.
 
 ## how to run
 mvn clean package
