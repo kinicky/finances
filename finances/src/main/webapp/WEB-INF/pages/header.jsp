@@ -2,6 +2,7 @@
 <%@ page import="com.google.appengine.api.users.User"%>
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
+<%@ page import="java.util.Calendar"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -27,7 +28,7 @@
     <div class="topMenuBox">
         <div style="width: 300px; height: 35px; float: left; text-align: left;">LOGO IMG</div>
         <div style="width: 700px; height: 35px; padding-top: 8px; float: left; text-align: right; font-size: 1.1em;">
-            <span class="lightLbl"> build_20151116 | </span> 
+            <span class="lightLbl"> <fmt:formatDate value="<%=Calendar.getInstance().getTime()%>" pattern="yyyyMMdd_hhmm" /> | </span> 
             <span class="welcome"> 
             <%
                  UserService userService = UserServiceFactory.getUserService();

@@ -2,10 +2,12 @@ package com.kinicky.finances.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +35,6 @@ import com.google.visualization.datasource.render.JsonRenderer;
 import com.googlecode.objectify.ObjectifyService;
 import com.kinicky.finances.AvailableYearMonth;
 import com.kinicky.finances.Transaction;
-import com.kinicky.finances.common.FinancesHelper;
 
 @Controller
 public class SummaryController {
@@ -50,16 +51,24 @@ public class SummaryController {
         Map<String, String> monthList = new LinkedHashMap<String, String>();
         String mostRecentYear = "";
         
-        List<AvailableYearMonth> yms = ObjectifyService.ofy().load().type(AvailableYearMonth.class).order("yearMonth").list();
+        //List<AvailableYearMonth> yms = ObjectifyService.ofy().load().type(AvailableYearMonth.class).orderKey(true).list();
+        List<AvailableYearMonth> yms = ObjectifyService.ofy().load().type(AvailableYearMonth.class).list();
         
         if (!yms.isEmpty()) {
             mostRecentYear = yms.get(0).getYear();
             for (AvailableYearMonth ym : yms) {
                 
-                yearList.putIfAbsent(ym.getYear(), ym.getYear());
+                //yearList.putIfAbsent(ym.getYear(), ym.getYear());
+                
+                if (!yearList.containsKey(ym.getYear())) {
+                    yearList.put(ym.getYear(), ym.getYear());
+                }
                 
                 if (StringUtils.equals(ym.getYear(), mostRecentYear)) {
-                    monthList.putIfAbsent(ym.getMonth(), ym.getMonth());
+                    //monthList.putIfAbsent(ym.getMonth(), ym.getMonth());
+                    if (!yearList.containsKey(ym.getMonth())) {
+                        monthList.put(ym.getMonth(), ym.getMonth());
+                    }
                 }
             }
             
@@ -77,26 +86,65 @@ public class SummaryController {
     }
 
     @RequestMapping(value = "/drawSummaryLineChart", method = RequestMethod.POST)
-    public @ResponseBody String drawSummaryLineChart() {
+    public @ResponseBody String drawSummaryLineChart(@RequestBody String req) {
 
         logger.info(LID + "drawSummaryLineChart - BEGIN");
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            map = mapper.readValue(req, new TypeReference<Map<String, String>>(){});
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        String selectedYear = (String) map.get("selectedYear");
+        String selectedMonth = (String) map.get("selectedMonth");
+        
         DataTable data = new DataTable();
         ArrayList<ColumnDescription> cols = new ArrayList<ColumnDescription>();
-        cols.add(new ColumnDescription("date", ValueType.TEXT, "Date"));
-        cols.add(new ColumnDescription("withdrawal", ValueType.NUMBER, "Withdrawal"));
-        cols.add(new ColumnDescription("deposit", ValueType.NUMBER, "Deposit"));
+        cols.add(new ColumnDescription("date", ValueType.NUMBER, "Date"));
         cols.add(new ColumnDescription("balance", ValueType.NUMBER, "Balance"));
+        //cols.add(new ColumnDescription("deposit", ValueType.NUMBER, "Deposit"));
+        //cols.add(new ColumnDescription("balance", ValueType.NUMBER, "Balance"));
 
         data.addColumns(cols);
 
         try {
-            List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class).order("date").list();
+            List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class).filter("yearMonth", selectedYear + "-" + selectedMonth).list();
+            Calendar cal = Calendar.getInstance();
+            Integer day;
+            List<Double> list = new ArrayList<Double>();
+            
+            Map<Integer, List<Double>> chartPointsMap = new TreeMap<Integer, List<Double>>();
+            
+            // creates map by month with txns
             for (Transaction txn : txns) {
-                data.addRowFromValues(txn.getDate(), FinancesHelper.parseDouble(txn.getWithdrawal()), FinancesHelper.parseDouble(txn.getDeposit()), FinancesHelper.parseDouble(txn.getBalance()));
+                cal.setTime(txn.getDate());
+                day = cal.get(Calendar.DAY_OF_MONTH);
+                if (chartPointsMap.containsKey(day)) {
+                    //Double aux = chartPointsMap.get(day).get(0);
+                    //aux = chartPointsMap.get(day).get(0) + Double.parseDouble(txn.getBalance());
+                    //chartPointsMap.get(day).set(0, aux);
+
+                } else {
+                    list = new ArrayList<Double>();
+                    list.add(Double.parseDouble(txn.getBalance()));
+                    chartPointsMap.put(day, list);
+                }
             }
+            
+            // adds points to x axis
+            for (Integer xPoint : chartPointsMap.keySet()) {
+                data.addRowFromValues(xPoint, chartPointsMap.get(xPoint).get(0));
+            }
+
         } catch (TypeMismatchException e) {
-            System.out.println("Invalid type!");
+            System.out.println("Invalid type!" + e);
         }
 
         JsonNode root = null;
@@ -116,26 +164,66 @@ public class SummaryController {
     }
     
     @RequestMapping(value = "/drawIncomeLineChart", method = RequestMethod.POST)
-    public @ResponseBody String drawIncomeLineChart() {
+    public @ResponseBody String drawIncomeLineChart(@RequestBody String req) {
 
-        logger.info(LID + "drawIncomeLineChart - BEGIN");
+        logger.info(LID + "drawIncomeColumnChart - BEGIN");
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            map = mapper.readValue(req, new TypeReference<Map<String, String>>(){});
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        String selectedYear = (String) map.get("selectedYear");
+        String selectedMonth = (String) map.get("selectedMonth");
+        
         DataTable data = new DataTable();
         ArrayList<ColumnDescription> cols = new ArrayList<ColumnDescription>();
-        cols.add(new ColumnDescription("date", ValueType.TEXT, "Date"));
-        cols.add(new ColumnDescription("withdrawal", ValueType.NUMBER, "Withdrawal"));
+        cols.add(new ColumnDescription("date", ValueType.NUMBER, "Date"));
         cols.add(new ColumnDescription("deposit", ValueType.NUMBER, "Deposit"));
-        cols.add(new ColumnDescription("balance", ValueType.NUMBER, "Balance"));
 
         data.addColumns(cols);
 
         try {
-            List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class).order("date").list();
+            List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class).filter("yearMonth", selectedYear + "-" + selectedMonth).list();
+            Calendar cal = Calendar.getInstance();
+            Integer day;
+            List<Double> list = new ArrayList<Double>();
+            
+            Map<Integer, List<Double>> chartPointsMap = new TreeMap<Integer, List<Double>>();
+            
+            // creates map by month with txns
             for (Transaction txn : txns) {
-                data.addRowFromValues(txn.getDate(), FinancesHelper.parseDouble(txn.getWithdrawal()), FinancesHelper.parseDouble(txn.getDeposit()), FinancesHelper.parseDouble(txn.getBalance()));
+                if (StringUtils.isNotEmpty(txn.getDeposit())) {
+                    cal.setTime(txn.getDate());
+                    day = cal.get(Calendar.DAY_OF_MONTH);
+                    if (chartPointsMap.containsKey(day)) {
+                        chartPointsMap.get(day).add(Double.parseDouble(txn.getDeposit()));
+                    } else {
+                        list = new ArrayList<Double>();
+                        list.add(Double.parseDouble(txn.getDeposit()));
+                        chartPointsMap.put(day, list);
+                    }
+                }
             }
+            
+            // adds points to x axis
+            for (int i = 1; i < 32; i++) {
+                if (chartPointsMap.containsKey(i)) {
+                    data.addRowFromValues(i, sumAll(chartPointsMap.get(i)));
+                } else {
+                    data.addRowFromValues(i, 0);
+                }
+            }
+            
         } catch (TypeMismatchException e) {
-            System.out.println("Invalid type!");
+            System.out.println("Invalid type!" + e);
         }
 
         JsonNode root = null;
@@ -149,32 +237,72 @@ public class SummaryController {
             System.out.println(e.toString());
         }
         String result = root.toString();
-        logger.info(LID + "drawIncomeLineChart - END data: " + result);
+        logger.info(LID + "drawIncomeColumnChart - END data: " + result);
 
         return result;
     }
     
     @RequestMapping(value = "/drawExpenseLineChart", method = RequestMethod.POST)
-    public @ResponseBody String drawExpenseLineChart() {
+    public @ResponseBody String drawExpenseLineChart(@RequestBody String req) {
 
-        logger.info(LID + "drawExpenseLineChart - BEGIN");
+        logger.info(LID + "drawExpenseColumnChart - BEGIN");
 
+        Map<String, Object> map = new HashMap<String, Object>();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            map = mapper.readValue(req, new TypeReference<Map<String, String>>(){});
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        String selectedYear = (String) map.get("selectedYear");
+        String selectedMonth = (String) map.get("selectedMonth");
+        
         DataTable data = new DataTable();
         ArrayList<ColumnDescription> cols = new ArrayList<ColumnDescription>();
-        cols.add(new ColumnDescription("date", ValueType.TEXT, "Date"));
+        cols.add(new ColumnDescription("date", ValueType.NUMBER, "Date"));
         cols.add(new ColumnDescription("withdrawal", ValueType.NUMBER, "Withdrawal"));
-        cols.add(new ColumnDescription("deposit", ValueType.NUMBER, "Deposit"));
-        cols.add(new ColumnDescription("balance", ValueType.NUMBER, "Balance"));
 
         data.addColumns(cols);
 
         try {
-            List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class).order("date").list();
+            List<Transaction> txns = ObjectifyService.ofy().load().type(Transaction.class).filter("yearMonth", selectedYear + "-" + selectedMonth).list();
+            Calendar cal = Calendar.getInstance();
+            Integer day;
+            List<Double> list = new ArrayList<Double>();
+            
+            Map<Integer, List<Double>> chartPointsMap = new TreeMap<Integer, List<Double>>();
+            
+            // creates map by month with txns
             for (Transaction txn : txns) {
-                data.addRowFromValues(txn.getDate(), FinancesHelper.parseDouble(txn.getWithdrawal()), FinancesHelper.parseDouble(txn.getDeposit()), FinancesHelper.parseDouble(txn.getBalance()));
+                if (StringUtils.isNotEmpty(txn.getWithdrawal())) {
+                    cal.setTime(txn.getDate());
+                    day = cal.get(Calendar.DAY_OF_MONTH);
+                    if (chartPointsMap.containsKey(day)) {
+                        chartPointsMap.get(day).add(Double.parseDouble(txn.getWithdrawal()));
+                    } else {
+                        list = new ArrayList<Double>();
+                        list.add(Double.parseDouble(txn.getWithdrawal()));
+                        chartPointsMap.put(day, list);
+                    }
+                }
             }
+            
+            // adds points to x axis
+            for (int i = 1; i < 32; i++) {
+                if (chartPointsMap.containsKey(i)) {
+                    data.addRowFromValues(i, sumAll(chartPointsMap.get(i)));
+                } else {
+                    data.addRowFromValues(i, 0);
+                }
+            }
+
         } catch (TypeMismatchException e) {
-            System.out.println("Invalid type!");
+            System.out.println("Invalid type!" + e);
         }
 
         JsonNode root = null;
@@ -188,7 +316,7 @@ public class SummaryController {
             System.out.println(e.toString());
         }
         String result = root.toString();
-        logger.info(LID + "drawExpenseLineChart - END data: " + result);
+        logger.info(LID + "drawExpenseColumnChart - END data: " + result);
 
         return result;
     }
@@ -228,6 +356,17 @@ public class SummaryController {
         }
         logger.info(LID + "populateMonthDropdown - END data: " + result);
         
+        return result;
+    }
+    
+    private Double sumAll(List<Double> list) {
+        Double result = Double.valueOf(0);
+        if (list != null && !list.isEmpty()) {
+            
+            for (Double d : list) {
+                result += d;
+            }
+        }
         return result;
     }
 

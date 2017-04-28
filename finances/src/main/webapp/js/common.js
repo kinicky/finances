@@ -1,7 +1,19 @@
+function reloadCharts() {
+    drawSummaryCharts();
+    drawIncomeCharts();
+    drawExpenseCharts();
+}
+
 function drawSummaryCharts() {
+
+    var req = {
+            "selectedYear" : $("#yearDropdown").val(),
+            "selectedMonth" : $("#monthDropdown").val()
+        };
 
     var jsonData = $.ajax({
         type : 'post',
+        data : JSON.stringify(req),
         contentType : "application/json",
         url : "/summary/drawSummaryLineChart",
         dataType : "json",
@@ -11,10 +23,14 @@ function drawSummaryCharts() {
     var data = new google.visualization.DataTable(jsonData);
 
     var options = {
+        height: 250,
+        width: 1000,
         title : 'Summary',
         legend : {
-            position : 'bottom'
-        }
+            position : 'top'
+        },
+        hAxis: {slantedText:true,textStyle:{fontSize:10}},
+        explorer: { maxZoomIn: .001 }
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('summary_line_chart'));
@@ -24,8 +40,14 @@ function drawSummaryCharts() {
 
 function drawIncomeCharts() {
 
+    var req = {
+            "selectedYear" : $("#yearDropdown").val(),
+            "selectedMonth" : $("#monthDropdown").val()
+        };
+    
     var jsonData = $.ajax({
         type : 'post',
+        data : JSON.stringify(req),
         contentType : "application/json",
         url : "/summary/drawIncomeLineChart",
         dataType : "json",
@@ -37,19 +59,27 @@ function drawIncomeCharts() {
     var options = {
         title : 'Incomes',
         legend : {
-            position : 'bottom'
-        }
+            position : 'top'
+        },
+        hAxis: {slantedText:true,textStyle:{fontSize:10}},
+        explorer: { maxZoomIn: .001 }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('income_line_chart'));
+    var chart = new google.visualization.ColumnChart(document.getElementById('income_column_chart'));
 
     chart.draw(data, options);
 }
 
 function drawExpenseCharts() {
 
+    var req = {
+            "selectedYear" : $("#yearDropdown").val(),
+            "selectedMonth" : $("#monthDropdown").val()
+        };
+    
     var jsonData = $.ajax({
         type : 'post',
+        data : JSON.stringify(req),
         contentType : "application/json",
         url : "/summary/drawExpenseLineChart",
         dataType : "json",
@@ -61,11 +91,13 @@ function drawExpenseCharts() {
     var options = {
         title : 'Expenses',
         legend : {
-            position : 'bottom'
-        }
+            position : 'top'
+        },
+        hAxis: {slantedText:true,textStyle:{fontSize:10}},
+        explorer: { maxZoomIn: .001 }
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('expense_line_chart'));
+    var chart = new google.visualization.ColumnChart(document.getElementById('expense_column_chart'));
 
     chart.draw(data, options);
 }

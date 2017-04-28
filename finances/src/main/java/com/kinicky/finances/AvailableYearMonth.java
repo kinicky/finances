@@ -10,6 +10,7 @@ import com.googlecode.objectify.annotation.Index;
 public class AvailableYearMonth {
 
     @Id
+    private Long id;
     private String yearMonth;
     @Index
     private String year;
@@ -22,6 +23,14 @@ public class AvailableYearMonth {
         this.year = year;
         this.month = month;
         this.yearMonth = year + "-" + month;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getYearMonth() {

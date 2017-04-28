@@ -1,5 +1,7 @@
 package com.kinicky.finances;
 
+import java.util.Date;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.googlecode.objectify.annotation.Entity;
@@ -15,7 +17,7 @@ public class Transaction {
     private String account;
     private String code;
     @Index
-    private String date;
+    private Date date;
     private Integer lineNumber;
     @Index
     private String description;
@@ -31,6 +33,8 @@ public class Transaction {
     private String balance;
     @Index
     private String category;
+    @Index
+    private String yearMonth;
 
         
     public Long getId() {
@@ -65,11 +69,11 @@ public class Transaction {
         this.code = code;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -159,6 +163,14 @@ public class Transaction {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getYearMonth() {
+        return yearMonth;
+    }
+
+    public void setYearMonth(String yearMonth) {
+        this.yearMonth = yearMonth;
     }
 
     @Override
